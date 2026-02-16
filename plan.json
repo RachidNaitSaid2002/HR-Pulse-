@@ -1,0 +1,1239 @@
+{
+  "project": {
+    "name": "HR-Pulse",
+    "key": "HP",
+    "description": "Full-stack AI-powered job analysis platform with Azure infrastructure, ML salary prediction, and containerized deployment"
+  },
+  "epics": [
+    {
+      "id": "EPIC-1",
+      "name": "Infrastructure as Code (Terraform)",
+      "summary": "Provision Azure resources using Terraform with remote state management",
+      "status": "To Do",
+      "priority": "Highest",
+      "stories": [
+        {
+          "id": "HRP-101",
+          "type": "Story",
+          "summary": "Configure Terraform backend (azurerm) for remote state storage",
+          "description": "Initialize Terraform to use the provided Storage Account for .tfstate management. Configure backend block with resource group and container details.",
+          "acceptance_criteria": [
+            "Terraform backend configured to use azurerm provider",
+            "State file stored in central Storage Account",
+            "Backend configuration tested with terraform init"
+          ],
+          "priority": "Highest",
+          "story_points": 3,
+          "labels": [
+            "terraform",
+            "infrastructure",
+            "backend"
+          ],
+          "tasks": [
+            {
+              "summary": "Create backend.tf configuration",
+              "status": "To Do"
+            },
+            {
+              "summary": "Configure Azure provider authentication",
+              "status": "To Do"
+            },
+            {
+              "summary": "Test terraform init with remote backend",
+              "status": "To Do"
+            }
+          ]
+        },
+        {
+          "id": "HRP-102",
+          "type": "Story",
+          "summary": "Provision Azure SQL Database (Serverless)",
+          "description": "Create Azure SQL Database in serverless mode within the provided Resource Group using Terraform.",
+          "acceptance_criteria": [
+            "SQL Server and Database created via Terraform",
+            "Serverless tier configured",
+            "Connection strings generated and stored securely"
+          ],
+          "priority": "Highest",
+          "story_points": 5,
+          "labels": [
+            "terraform",
+            "azure-sql",
+            "database"
+          ],
+          "tasks": [
+            {
+              "summary": "Write Terraform module for SQL Server",
+              "status": "To Do"
+            },
+            {
+              "summary": "Configure SQL Database (serverless)",
+              "status": "To Do"
+            },
+            {
+              "summary": "Set up firewall rules",
+              "status": "To Do"
+            },
+            {
+              "summary": "Output connection strings",
+              "status": "To Do"
+            }
+          ]
+        },
+        {
+          "id": "HRP-103",
+          "type": "Story",
+          "summary": "Provision Azure AI Language Service",
+          "description": "Deploy Azure AI Language service for NER (Named Entity Recognition) extraction.",
+          "acceptance_criteria": [
+            "Azure AI Language resource created",
+            "NER capability enabled",
+            "API keys and endpoint configured"
+          ],
+          "priority": "Highest",
+          "story_points": 3,
+          "labels": [
+            "terraform",
+            "azure-ai",
+            "ner"
+          ],
+          "tasks": [
+            {
+              "summary": "Create Azure AI Language resource",
+              "status": "To Do"
+            },
+            {
+              "summary": "Configure NER feature",
+              "status": "To Do"
+            },
+            {
+              "summary": "Extract and store credentials",
+              "status": "To Do"
+            }
+          ]
+        },
+        {
+          "id": "HRP-104",
+          "type": "Story",
+          "summary": "Validate infrastructure deployment on Azure Portal",
+          "description": "Verify all provisioned resources are correctly deployed and accessible in the Azure Portal.",
+          "acceptance_criteria": [
+            "All resources visible in Resource Group",
+            "SQL Database accessible",
+            "AI Language service responding"
+          ],
+          "priority": "High",
+          "story_points": 2,
+          "labels": [
+            "validation",
+            "azure",
+            "qa"
+          ],
+          "tasks": [
+            {
+              "summary": "Verify resources in Azure Portal",
+              "status": "To Do"
+            },
+            {
+              "summary": "Test SQL connectivity",
+              "status": "To Do"
+            },
+            {
+              "summary": "Test AI Language API endpoint",
+              "status": "To Do"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "EPIC-2",
+      "name": "Data Processing & AI Integration",
+      "summary": "Ingest, clean job data and extract skills using Azure AI NER",
+      "status": "To Do",
+      "priority": "Highest",
+      "stories": [
+        {
+          "id": "HRP-201",
+          "type": "Story",
+          "summary": "Develop data ingestion script for jobs.csv",
+          "description": "Create Python script to clean and preprocess jobs.csv file using pandas. Handle missing values, standardize formats.",
+          "acceptance_criteria": [
+            "Script reads jobs.csv successfully",
+            "Data cleaning implemented (nulls, duplicates, formatting)",
+            "Cleaned data exportable to DataFrame"
+          ],
+          "priority": "High",
+          "story_points": 5,
+          "labels": [
+            "data-processing",
+            "pandas",
+            "python"
+          ],
+          "tasks": [
+            {
+              "summary": "Set up project with uv (replace pip)",
+              "status": "To Do"
+            },
+            {
+              "summary": "Create data cleaning module",
+              "status": "To Do"
+            },
+            {
+              "summary": "Handle edge cases and data validation",
+              "status": "To Do"
+            }
+          ]
+        },
+        {
+          "id": "HRP-202",
+          "type": "Story",
+          "summary": "Integrate Azure AI Language for NER skill extraction",
+          "description": "Connect to Azure AI Language service to extract skills from job descriptions using Named Entity Recognition.",
+          "acceptance_criteria": [
+            "Azure AI Language client configured",
+            "NER extraction working on job descriptions",
+            "Skills extracted in structured format"
+          ],
+          "priority": "High",
+          "story_points": 8,
+          "labels": [
+            "azure-ai",
+            "ner",
+            "ml"
+          ],
+          "tasks": [
+            {
+              "summary": "Install Azure AI Language SDK",
+              "status": "To Do"
+            },
+            {
+              "summary": "Implement NER extraction logic",
+              "status": "To Do"
+            },
+            {
+              "summary": "Map entities to skill categories",
+              "status": "To Do"
+            },
+            {
+              "summary": "Handle API rate limits and errors",
+              "status": "To Do"
+            }
+          ]
+        },
+        {
+          "id": "HRP-203",
+          "type": "Story",
+          "summary": "Design and implement Azure SQL schema",
+          "description": "Create database schema with tables for jobs, skills, and relationships. Include id, job_title, skills_extracted (JSON).",
+          "acceptance_criteria": [
+            "Schema created with required fields",
+            "JSON column for skills_extracted",
+            "Indexes for performance optimization"
+          ],
+          "priority": "High",
+          "story_points": 5,
+          "labels": [
+            "database",
+            "sql",
+            "schema"
+          ],
+          "tasks": [
+            {
+              "summary": "Design ERD diagram",
+              "status": "To Do"
+            },
+            {
+              "summary": "Create SQL DDL scripts",
+              "status": "To Do"
+            },
+            {
+              "summary": "Implement schema with SQLAlchemy models",
+              "status": "To Do"
+            }
+          ]
+        },
+        {
+          "id": "HRP-204",
+          "type": "Story",
+          "summary": "Inject processed data into Azure SQL",
+          "description": "Load cleaned and AI-processed job data into Azure SQL Database using SQLAlchemy.",
+          "acceptance_criteria": [
+            "Data successfully loaded into SQL tables",
+            "Skills stored as JSON in skills_extracted column",
+            "Connection string configured in .env file"
+          ],
+          "priority": "High",
+          "story_points": 5,
+          "labels": [
+            "database",
+            "etl",
+            "sql"
+          ],
+          "tasks": [
+            {
+              "summary": "Create database connection module",
+              "status": "To Do"
+            },
+            {
+              "summary": "Implement data loading pipeline",
+              "status": "To Do"
+            },
+            {
+              "summary": "Create .env template with connection string",
+              "status": "To Do"
+            },
+            {
+              "summary": "Validate data integrity after load",
+              "status": "To Do"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "EPIC-3",
+      "name": "ML Predictor Module",
+      "summary": "Salary prediction model using regression",
+      "status": "To Do",
+      "priority": "High",
+      "stories": [
+        {
+          "id": "HRP-301",
+          "type": "Story",
+          "summary": "Preprocess Salary Estimate column",
+          "description": "Transform salary ranges like '$137K-$171K' into numerical average values for ML training.",
+          "acceptance_criteria": [
+            "Parsing logic for salary ranges implemented",
+            "Edge cases handled (negotiable, undisclosed)",
+            "Average salary calculated and stored"
+          ],
+          "priority": "High",
+          "story_points": 3,
+          "labels": [
+            "ml",
+            "preprocessing",
+            "feature-engineering"
+          ],
+          "tasks": [
+            {
+              "summary": "Create salary parsing regex/logic",
+              "status": "To Do"
+            },
+            {
+              "summary": "Handle missing/invalid salary data",
+              "status": "To Do"
+            },
+            {
+              "summary": "Generate numerical salary features",
+              "status": "To Do"
+            }
+          ]
+        },
+        {
+          "id": "HRP-302",
+          "type": "Story",
+          "summary": "Train regression model for salary prediction",
+          "description": "Build and train ML regression model to predict salary ranges based on job features and extracted skills.",
+          "acceptance_criteria": [
+            "Regression model trained with acceptable accuracy (R² > 0.7)",
+            "Model serialized and versioned",
+            "Feature importance analyzed"
+          ],
+          "priority": "High",
+          "story_points": 8,
+          "labels": [
+            "ml",
+            "regression",
+            "scikit-learn"
+          ],
+          "tasks": [
+            {
+              "summary": "Prepare feature matrix",
+              "status": "To Do"
+            },
+            {
+              "summary": "Train/test split implementation",
+              "status": "To Do"
+            },
+            {
+              "summary": "Train regression model (Random Forest/XGBoost)",
+              "status": "To Do"
+            },
+            {
+              "summary": "Evaluate model performance",
+              "status": "To Do"
+            },
+            {
+              "summary": "Save model artifact",
+              "status": "To Do"
+            }
+          ]
+        },
+        {
+          "id": "HRP-303",
+          "type": "Story",
+          "summary": "Create salary prediction API endpoint",
+          "description": "Expose salary prediction functionality through FastAPI endpoint for integration.",
+          "acceptance_criteria": [
+            "POST endpoint for salary prediction",
+            "Input validation implemented",
+            "Prediction response in JSON format"
+          ],
+          "priority": "Medium",
+          "story_points": 3,
+          "labels": [
+            "api",
+            "ml",
+            "fastapi"
+          ],
+          "tasks": [
+            {
+              "summary": "Load model in API context",
+              "status": "To Do"
+            },
+            {
+              "summary": "Create prediction endpoint",
+              "status": "To Do"
+            },
+            {
+              "summary": "Add request/response schemas",
+              "status": "To Do"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "EPIC-4",
+      "name": "Backend API Development",
+      "summary": "FastAPI backend with job endpoints and OpenTelemetry instrumentation",
+      "status": "To Do",
+      "priority": "High",
+      "stories": [
+        {
+          "id": "HRP-401",
+          "type": "Story",
+          "summary": "Set up FastAPI project structure",
+          "description": "Initialize FastAPI application with proper project structure, dependency injection, and configuration management.",
+          "acceptance_criteria": [
+            "FastAPI app skeleton created",
+            "Configuration management with pydantic-settings",
+            "Project structure follows best practices"
+          ],
+          "priority": "High",
+          "story_points": 3,
+          "labels": [
+            "fastapi",
+            "backend",
+            "architecture"
+          ],
+          "tasks": [
+            {
+              "summary": "Create FastAPI main app",
+              "status": "To Do"
+            },
+            {
+              "summary": "Set up routers structure",
+              "status": "To Do"
+            },
+            {
+              "summary": "Configure settings management",
+              "status": "To Do"
+            }
+          ]
+        },
+        {
+          "id": "HRP-402",
+          "type": "Story",
+          "summary": "Implement job listing endpoints",
+          "description": "Create REST endpoints for listing jobs, searching by skills, and retrieving job details.",
+          "acceptance_criteria": [
+            "GET /jobs endpoint with pagination",
+            "GET /jobs/{id} for job details",
+            "GET /jobs/search?skill=xxx for skill-based search",
+            "Response models with Pydantic"
+          ],
+          "priority": "High",
+          "story_points": 5,
+          "labels": [
+            "fastapi",
+            "api",
+            "crud"
+          ],
+          "tasks": [
+            {
+              "summary": "Create job repository layer",
+              "status": "To Do"
+            },
+            {
+              "summary": "Implement list jobs endpoint",
+              "status": "To Do"
+            },
+            {
+              "summary": "Implement search by skills endpoint",
+              "status": "To Do"
+            },
+            {
+              "summary": "Add pagination support",
+              "status": "To Do"
+            }
+          ]
+        },
+        {
+          "id": "HRP-403",
+          "type": "Story",
+          "summary": "Implement OpenTelemetry instrumentation",
+          "description": "Instrument FastAPI app with OpenTelemetry SDK for distributed tracing. Track SQL queries and AI API calls.",
+          "acceptance_criteria": [
+            "OpenTelemetry configured for FastAPI",
+            "SQL query traces captured",
+            "Azure AI API call traces captured",
+            "Traces exportable via OTLP"
+          ],
+          "priority": "Medium",
+          "story_points": 5,
+          "labels": [
+            "observability",
+            "opentelemetry",
+            "tracing"
+          ],
+          "tasks": [
+            {
+              "summary": "Install OpenTelemetry packages",
+              "status": "To Do"
+            },
+            {
+              "summary": "Configure FastAPI instrumentation",
+              "status": "To Do"
+            },
+            {
+              "summary": "Add SQLAlchemy instrumentation",
+              "status": "To Do"
+            },
+            {
+              "summary": "Instrument Azure AI client calls",
+              "status": "To Do"
+            },
+            {
+              "summary": "Configure OTLP exporter",
+              "status": "To Do"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "EPIC-5",
+      "name": "Frontend Development",
+      "summary": "Streamlit or NextJS frontend for recruiters",
+      "status": "To Do",
+      "priority": "Medium",
+      "stories": [
+        {
+          "id": "HRP-501",
+          "type": "Story",
+          "summary": "Set up frontend project (Streamlit or NextJS)",
+          "description": "Initialize frontend application with chosen framework (Streamlit recommended for Python ecosystem alignment).",
+          "acceptance_criteria": [
+            "Project initialized with chosen framework",
+            "Connection to backend API configured",
+            "Basic layout and navigation implemented"
+          ],
+          "priority": "Medium",
+          "story_points": 3,
+          "labels": [
+            "frontend",
+            "streamlit",
+            "nextjs"
+          ],
+          "tasks": [
+            {
+              "summary": "Initialize project with uv/npm",
+              "status": "To Do"
+            },
+            {
+              "summary": "Create API client module",
+              "status": "To Do"
+            },
+            {
+              "summary": "Set up basic layout",
+              "status": "To Do"
+            }
+          ]
+        },
+        {
+          "id": "HRP-502",
+          "type": "Story",
+          "summary": "Create job visualization dashboard",
+          "description": "Build dashboard for recruiters to view job listings, statistics, and salary predictions.",
+          "acceptance_criteria": [
+            "Job listing table with search/filter",
+            "Skill distribution charts",
+            "Salary range visualizations"
+          ],
+          "priority": "Medium",
+          "story_points": 5,
+          "labels": [
+            "frontend",
+            "dashboard",
+            "visualization"
+          ],
+          "tasks": [
+            {
+              "summary": "Create job listing view",
+              "status": "To Do"
+            },
+            {
+              "summary": "Add skill filter component",
+              "status": "To Do"
+            },
+            {
+              "summary": "Implement charts and visualizations",
+              "status": "To Do"
+            }
+          ]
+        },
+        {
+          "id": "HRP-503",
+          "type": "Story",
+          "summary": "Implement file upload functionality",
+          "description": "Allow recruiters to upload new job CSV files for processing.",
+          "acceptance_criteria": [
+            "File upload component created",
+            "CSV validation implemented",
+            "Upload triggers backend processing"
+          ],
+          "priority": "Medium",
+          "story_points": 3,
+          "labels": [
+            "frontend",
+            "upload",
+            "csv"
+          ],
+          "tasks": [
+            {
+              "summary": "Create file upload UI",
+              "status": "To Do"
+            },
+            {
+              "summary": "Add file validation",
+              "status": "To Do"
+            },
+            {
+              "summary": "Integrate with backend upload endpoint",
+              "status": "To Do"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "EPIC-6",
+      "name": "Containerization & Orchestration",
+      "summary": "Docker containers and orchestration with Terraform Docker provider",
+      "status": "To Do",
+      "priority": "High",
+      "stories": [
+        {
+          "id": "HRP-601",
+          "type": "Story",
+          "summary": "Create optimized Dockerfile for Backend",
+          "description": "Build multi-stage Dockerfile for FastAPI backend using uv for dependency management.",
+          "acceptance_criteria": [
+            "Multi-stage build implemented",
+            "uv used instead of pip",
+            "Image size optimized",
+            "Non-root user configured"
+          ],
+          "priority": "High",
+          "story_points": 3,
+          "labels": [
+            "docker",
+            "backend",
+            "containerization"
+          ],
+          "tasks": [
+            {
+              "summary": "Create backend Dockerfile with uv",
+              "status": "To Do"
+            },
+            {
+              "summary": "Optimize image layers",
+              "status": "To Do"
+            },
+            {
+              "summary": "Configure non-root user",
+              "status": "To Do"
+            }
+          ]
+        },
+        {
+          "id": "HRP-602",
+          "type": "Story",
+          "summary": "Create optimized Dockerfile for Frontend",
+          "description": "Build Dockerfile for Streamlit/NextJS frontend.",
+          "acceptance_criteria": [
+            "Frontend Dockerfile created",
+            "Production build optimized",
+            "Nginx configuration (if NextJS)"
+          ],
+          "priority": "High",
+          "story_points": 3,
+          "labels": [
+            "docker",
+            "frontend",
+            "containerization"
+          ],
+          "tasks": [
+            {
+              "summary": "Create frontend Dockerfile",
+              "status": "To Do"
+            },
+            {
+              "summary": "Configure production build",
+              "status": "To Do"
+            },
+            {
+              "summary": "Test container locally",
+              "status": "To Do"
+            }
+          ]
+        },
+        {
+          "id": "HRP-603",
+          "type": "Story",
+          "summary": "Create docker-compose.yml for local development",
+          "description": "Orchestrate backend, frontend, and Jaeger services using Docker Compose.",
+          "acceptance_criteria": [
+            "docker-compose.yml with all services",
+            "Environment variables from .env injected",
+            "Jaeger container for tracing",
+            "Health checks configured"
+          ],
+          "priority": "High",
+          "story_points": 3,
+          "labels": [
+            "docker-compose",
+            "orchestration",
+            "local-dev"
+          ],
+          "tasks": [
+            {
+              "summary": "Define backend service",
+              "status": "To Do"
+            },
+            {
+              "summary": "Define frontend service",
+              "status": "To Do"
+            },
+            {
+              "summary": "Add Jaeger service for tracing",
+              "status": "To Do"
+            },
+            {
+              "summary": "Configure networking and volumes",
+              "status": "To Do"
+            }
+          ]
+        },
+        {
+          "id": "HRP-604",
+          "type": "Story",
+          "summary": "Implement Terraform Docker provider for local orchestration",
+          "description": "Use Terraform Docker provider to manage local container lifecycle with dynamic environment variable injection.",
+          "acceptance_criteria": [
+            "Terraform Docker provider configured",
+            "Containers managed via Terraform",
+            ".env variables dynamically injected",
+            "Local infrastructure as code"
+          ],
+          "priority": "Medium",
+          "story_points": 5,
+          "labels": [
+            "terraform",
+            "docker",
+            "iac"
+          ],
+          "tasks": [
+            {
+              "summary": "Configure Docker provider in Terraform",
+              "status": "To Do"
+            },
+            {
+              "summary": "Create docker_container resources",
+              "status": "To Do"
+            },
+            {
+              "summary": "Implement dynamic env var injection from .env",
+              "status": "To Do"
+            },
+            {
+              "summary": "Create terraform apply/destroy workflow",
+              "status": "To Do"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "EPIC-7",
+      "name": "Testing & Quality Assurance",
+      "summary": "Pytest unit tests and code quality validation",
+      "status": "To Do",
+      "priority": "High",
+      "stories": [
+        {
+          "id": "HRP-701",
+          "type": "Story",
+          "summary": "Write unit tests for data processing module",
+          "description": "Create comprehensive pytest suite for CSV cleaning and data transformation logic.",
+          "acceptance_criteria": [
+            "Tests for CSV parsing",
+            "Tests for data cleaning functions",
+            "Edge case coverage > 80%"
+          ],
+          "priority": "High",
+          "story_points": 5,
+          "labels": [
+            "testing",
+            "pytest",
+            "unit-tests"
+          ],
+          "tasks": [
+            {
+              "summary": "Set up pytest configuration",
+              "status": "To Do"
+            },
+            {
+              "summary": "Write tests for data cleaning",
+              "status": "To Do"
+            },
+            {
+              "summary": "Create test fixtures",
+              "status": "To Do"
+            }
+          ]
+        },
+        {
+          "id": "HRP-702",
+          "type": "Story",
+          "summary": "Write unit tests for API endpoints",
+          "description": "Test FastAPI endpoints using TestClient and pytest.",
+          "acceptance_criteria": [
+            "Tests for all CRUD endpoints",
+            "Mock external dependencies",
+            "Test database isolation"
+          ],
+          "priority": "High",
+          "story_points": 5,
+          "labels": [
+            "testing",
+            "pytest",
+            "api"
+          ],
+          "tasks": [
+            {
+              "summary": "Set up test database",
+              "status": "To Do"
+            },
+            {
+              "summary": "Write endpoint tests",
+              "status": "To Do"
+            },
+            {
+              "summary": "Mock Azure AI calls",
+              "status": "To Do"
+            }
+          ]
+        },
+        {
+          "id": "HRP-703",
+          "type": "Story",
+          "summary": "Write tests for ML predictor module",
+          "description": "Test salary preprocessing and prediction logic.",
+          "acceptance_criteria": [
+            "Tests for salary parsing",
+            "Tests for model prediction",
+            "Tests for feature engineering"
+          ],
+          "priority": "Medium",
+          "story_points": 3,
+          "labels": [
+            "testing",
+            "pytest",
+            "ml"
+          ],
+          "tasks": [
+            {
+              "summary": "Test salary parsing logic",
+              "status": "To Do"
+            },
+            {
+              "summary": "Test model inference",
+              "status": "To Do"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "EPIC-8",
+      "name": "CI/CD Pipeline",
+      "summary": "GitHub Actions for linting, testing, and Docker builds",
+      "status": "To Do",
+      "priority": "High",
+      "stories": [
+        {
+          "id": "HRP-801",
+          "type": "Story",
+          "summary": "Configure GitHub Actions for linting (Ruff/Flake8)",
+          "description": "Set up CI job to validate Python code quality using Ruff (preferred) or Flake8.",
+          "acceptance_criteria": [
+            "GitHub Actions workflow created",
+            "Ruff/Flake8 configured with strict rules",
+            "Pipeline fails on linting errors",
+            "Code formatting checks included"
+          ],
+          "priority": "High",
+          "story_points": 3,
+          "labels": [
+            "ci-cd",
+            "github-actions",
+            "linting"
+          ],
+          "tasks": [
+            {
+              "summary": "Create .github/workflows/ci.yml",
+              "status": "To Do"
+            },
+            {
+              "summary": "Configure Ruff linter",
+              "status": "To Do"
+            },
+            {
+              "summary": "Set up fail-on-error policy",
+              "status": "To Do"
+            }
+          ]
+        },
+        {
+          "id": "HRP-802",
+          "type": "Story",
+          "summary": "Configure GitHub Actions for unit tests",
+          "description": "Add job to run pytest suite on every push/PR.",
+          "acceptance_criteria": [
+            "Pytest job in CI pipeline",
+            "Coverage reporting enabled",
+            "Tests run on multiple Python versions",
+            "Pipeline fails if tests fail"
+          ],
+          "priority": "High",
+          "story_points": 3,
+          "labels": [
+            "ci-cd",
+            "github-actions",
+            "testing"
+          ],
+          "tasks": [
+            {
+              "summary": "Add pytest job to workflow",
+              "status": "To Do"
+            },
+            {
+              "summary": "Configure test coverage reporting",
+              "status": "To Do"
+            },
+            {
+              "summary": "Set up test matrix",
+              "status": "To Do"
+            }
+          ]
+        },
+        {
+          "id": "HRP-803",
+          "type": "Story",
+          "summary": "Configure GitHub Actions for Docker builds",
+          "description": "Add job to build Docker images after code validation.",
+          "acceptance_criteria": [
+            "Docker build job in pipeline",
+            "Backend and Frontend images built",
+            "Build verification (no dependency errors)",
+            "Optional: Push to registry"
+          ],
+          "priority": "High",
+          "story_points": 3,
+          "labels": [
+            "ci-cd",
+            "github-actions",
+            "docker"
+          ],
+          "tasks": [
+            {
+              "summary": "Add Docker build steps",
+              "status": "To Do"
+            },
+            {
+              "summary": "Build backend image",
+              "status": "To Do"
+            },
+            {
+              "summary": "Build frontend image",
+              "status": "To Do"
+            },
+            {
+              "summary": "Verify image builds successfully",
+              "status": "To Do"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "EPIC-9",
+      "name": "Observability & Monitoring",
+      "summary": "Jaeger tracing and performance monitoring",
+      "status": "To Do",
+      "priority": "Medium",
+      "stories": [
+        {
+          "id": "HRP-901",
+          "type": "Story",
+          "summary": "Set up Jaeger container for trace visualization",
+          "description": "Deploy Jaeger as part of docker-compose for local trace viewing.",
+          "acceptance_criteria": [
+            "Jaeger UI accessible on port 16686",
+            "OTLP receiver configured",
+            "Traces visible in Jaeger UI"
+          ],
+          "priority": "Medium",
+          "story_points": 2,
+          "labels": [
+            "observability",
+            "jaeger",
+            "tracing"
+          ],
+          "tasks": [
+            {
+              "summary": "Add Jaeger to docker-compose",
+              "status": "To Do"
+            },
+            {
+              "summary": "Configure OTLP endpoint",
+              "status": "To Do"
+            },
+            {
+              "summary": "Verify trace reception",
+              "status": "To Do"
+            }
+          ]
+        },
+        {
+          "id": "HRP-902",
+          "type": "Story",
+          "summary": "Implement custom spans for AI extraction timing",
+          "description": "Add custom OpenTelemetry spans to track Azure AI NER extraction duration.",
+          "acceptance_criteria": [
+            "Custom span for AI extraction",
+            "Timing metrics captured",
+            "Visible in Jaeger trace tree"
+          ],
+          "priority": "Medium",
+          "story_points": 2,
+          "labels": [
+            "observability",
+            "opentelemetry",
+            "performance"
+          ],
+          "tasks": [
+            {
+              "summary": "Add spans to AI client",
+              "status": "To Do"
+            },
+            {
+              "summary": "Add attributes to spans",
+              "status": "To Do"
+            }
+          ]
+        },
+        {
+          "id": "HRP-903",
+          "type": "Story",
+          "summary": "Implement SQL query performance monitoring",
+          "description": "Track SQL query latency and slow queries using OpenTelemetry.",
+          "acceptance_criteria": [
+            "SQL query traces captured",
+            "Query duration metrics",
+            "Slow query identification"
+          ],
+          "priority": "Medium",
+          "story_points": 2,
+          "labels": [
+            "observability",
+            "sql",
+            "performance"
+          ],
+          "tasks": [
+            {
+              "summary": "Instrument SQLAlchemy",
+              "status": "To Do"
+            },
+            {
+              "summary": "Add query timing spans",
+              "status": "To Do"
+            }
+          ]
+        },
+        {
+          "id": "HRP-904",
+          "type": "Story",
+          "summary": "Configure error tracking (500 errors)",
+          "description": "Capture and visualize HTTP 500 errors in Jaeger.",
+          "acceptance_criteria": [
+            "Error traces captured",
+            "Stack traces visible",
+            "Error rate metrics"
+          ],
+          "priority": "Low",
+          "story_points": 2,
+          "labels": [
+            "observability",
+            "error-tracking",
+            "monitoring"
+          ],
+          "tasks": [
+            {
+              "summary": "Configure error recording",
+              "status": "To Do"
+            },
+            {
+              "summary": "Add error attributes to spans",
+              "status": "To Do"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "sprints": [
+    {
+      "id": "Sprint-1",
+      "name": "Infrastructure & Data Foundation",
+      "duration_weeks": 2,
+      "goals": [
+        "Provision Azure infrastructure with Terraform",
+        "Set up data processing pipeline",
+        "Implement Azure AI NER integration"
+      ],
+      "epics": [
+        "EPIC-1",
+        "EPIC-2"
+      ]
+    },
+    {
+      "id": "Sprint-2",
+      "name": "ML & Backend Core",
+      "duration_weeks": 2,
+      "goals": [
+        "Build salary prediction model",
+        "Develop FastAPI backend",
+        "Implement OpenTelemetry instrumentation"
+      ],
+      "epics": [
+        "EPIC-3",
+        "EPIC-4"
+      ]
+    },
+    {
+      "id": "Sprint-3",
+      "name": "Frontend & Containerization",
+      "duration_weeks": 2,
+      "goals": [
+        "Build recruiter frontend interface",
+        "Containerize all services",
+        "Set up local orchestration"
+      ],
+      "epics": [
+        "EPIC-5",
+        "EPIC-6"
+      ]
+    },
+    {
+      "id": "Sprint-4",
+      "name": "Quality & Automation",
+      "duration_weeks": 2,
+      "goals": [
+        "Implement comprehensive testing",
+        "Set up CI/CD pipeline",
+        "Configure observability stack"
+      ],
+      "epics": [
+        "EPIC-7",
+        "EPIC-8",
+        "EPIC-9"
+      ]
+    }
+  ],
+  "workflow": {
+    "columns": [
+      {
+        "name": "Backlog",
+        "status_category": "To Do"
+      },
+      {
+        "name": "To Do",
+        "status_category": "To Do"
+      },
+      {
+        "name": "In Progress",
+        "status_category": "In Progress"
+      },
+      {
+        "name": "Code Review",
+        "status_category": "In Progress"
+      },
+      {
+        "name": "Testing",
+        "status_category": "In Progress"
+      },
+      {
+        "name": "Done",
+        "status_category": "Done"
+      }
+    ]
+  },
+  "labels": [
+    {
+      "name": "terraform",
+      "color": "#0052CC"
+    },
+    {
+      "name": "azure",
+      "color": "#0078D4"
+    },
+    {
+      "name": "fastapi",
+      "color": "#009639"
+    },
+    {
+      "name": "docker",
+      "color": "#2496ED"
+    },
+    {
+      "name": "ml",
+      "color": "#FF6B6B"
+    },
+    {
+      "name": "testing",
+      "color": "#6554C0"
+    },
+    {
+      "name": "ci-cd",
+      "color": "#172B4D"
+    },
+    {
+      "name": "observability",
+      "color": "#00B8D9"
+    }
+  ]
+}
