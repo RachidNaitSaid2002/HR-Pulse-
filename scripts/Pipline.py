@@ -1,6 +1,9 @@
 import joblib
 import pandas as pd
-from Get_Skills import get_skills
+try:
+    from scripts.Get_Skills import get_skills
+except ModuleNotFoundError:
+    from Get_Skills import get_skills
 
 def get_job_clean_encoded(title):
     title = title.lower()
