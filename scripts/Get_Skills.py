@@ -19,6 +19,7 @@ def get_skills(job_description):
 
     try:
         response = client.recognize_entities(documents=[truncated])
+
         return list(
             {
                 entity.text

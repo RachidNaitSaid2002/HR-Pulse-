@@ -1,1 +1,7 @@
-pandas>=3.0.0
+fastapi[all]
+uvicorn
+xgboost
+scikit-learn
+pandas
+numpy
+joblib
