@@ -17,8 +17,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="scroll-smooth">
-      <body className={`${inter.className} antialiased grainy bg-grid-pattern`}>
+    <html lang="en" className="scroll-smooth" suppressHydrationWarning>
+      <body className={`${inter.className} antialiased grainy bg-grid-pattern`} suppressHydrationWarning>
         <ToastProvider>
           <main>{children}</main>
           <ToastContainer />

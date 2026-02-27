@@ -1,9 +1,21 @@
 "use client";
 
 import { useState } from "react";
-import Link from "next/link";
+import { motion, AnimatePresence } from "framer-motion";
 import { useToast } from "@/app/lib/toast";
 import { predictApi } from "@/app/lib/api";
+import { DashboardLayout } from "../components/dashboard/DashboardLayout";
+import { StatsGrid } from "../components/dashboard/StatsGrid";
+import {
+  BrainCircuit,
+  Building2,
+  MapPin,
+  Calendar,
+  ChevronRight,
+  Sparkles,
+  DollarSign,
+  AlertCircle
+} from "lucide-react";
 
 interface JobData {
   job_description: string;
@@ -43,7 +55,7 @@ const COMPANY_SIZES = [
 
 const STATES = ["CA", "NY", "TX", "WA", "MA", "IL", "FL", "GA", "NC", "PA", "OH", "CO", "VA"];
 
-export default function Predict() {
+export default function PredictPage() {
   const { showToast } = useToast();
   const [formData, setFormData] = useState<JobData>({
     job_description: "",
@@ -55,6 +67,7 @@ export default function Predict() {
     state: "CA",
     rating: 3.5,
   });
+
   const [isLoading, setIsLoading] = useState(false);
   const [result, setResult] = useState<{ predicted_salary: number } | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -78,9 +91,9 @@ export default function Predict() {
 
       const data = await predictApi.getPrediction(formData, token);
       setResult(data);
-      showToast("Prediction generated successfully!", "success");
-    } catch (err) {
-      const message = err instanceof Error ? err.message : "Unable to connect to the prediction service.";
+      showToast("Prediction successful!", "success");
+    } catch (err: any) {
+      const message = err.message || "Unable to connect to service.";
       setError(message);
       showToast(message, "error");
     } finally {
@@ -88,213 +101,236 @@ export default function Predict() {
     }
   };
 
-  const handleLogout = () => {
-    localStorage.removeItem("token");
-    showToast("You have been signed out", "info");
-    window.location.href = "/signin";
-  };
-
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 pt-20 pb-12 px-6 lg:px-12">
-      <div className="max-w-[1600px] mx-auto">
-        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6 mb-12">
-          <div>
-            <h1 className="text-3xl font-light text-slate-900 dark:text-white tracking-tight mb-2">
-              Salary <span className="font-semibold">Prediction</span>
-            </h1>
-            <p className="text-slate-500 dark:text-slate-400 font-light max-w-xl">
-              Enter job details to generate an AI-powered salary prediction
-            </p>
-          </div>
-          <div className="flex items-center gap-4">
-            <button 
-              onClick={handleLogout}
-              className="px-5 py-2.5 text-sm font-medium text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white transition-colors"
-            >
-              Sign out
-            </button>
-          </div>
-        </div>
+    <DashboardLayout>
+      <div className="space-y-8 pb-10">
+        <StatsGrid />
 
-        <div className="grid lg:grid-cols-12 gap-8 lg:gap-12">
-          <div className="lg:col-span-8 space-y-6">
-            <form onSubmit={handleSubmit} className="space-y-6">
-              <div className="bg-white dark:bg-slate-900/80 backdrop-blur-xl rounded-3xl p-8 shadow-xl shadow-slate-200/30 dark:shadow-slate-900/30 border border-slate-200/50 dark:border-slate-800/50">
-                <div className="flex items-center gap-4 mb-8">
-                  <div className="w-10 h-10 rounded-xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center">
-                    <svg className="w-5 h-5 text-slate-600 dark:text-slate-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                    </svg>
-                  </div>
-                  <h3 className="text-lg font-medium text-slate-900 dark:text-white">Job Details</h3>
+        <div className="grid lg:grid-cols-3 gap-8">
+          {/* Main Form Area */}
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="lg:col-span-2 space-y-6"
+          >
+            <div className="bg-white rounded-[2rem] p-8 md:p-10 border border-slate-100 shadow-sm relative overflow-hidden">
+              <div className="flex items-center gap-4 mb-10">
+                <div className="w-12 h-12 rounded-xl bg-black flex items-center justify-center text-white shadow-lg">
+                  <BrainCircuit size={24} />
                 </div>
+                <div>
+                  <h3 className="text-xl font-bold text-black tracking-tight leading-none">
+                    Predictor Engine
+                  </h3>
+                  <p className="text-[10px] text-slate-400 font-semibold uppercase tracking-widest mt-1">Powered by XGBoost Regression</p>
+                </div>
+              </div>
 
+              <form onSubmit={handleSubmit} className="space-y-8">
+                {/* Job Info Section */}
                 <div className="space-y-6">
-                  <div>
-                    <label className="block text-xs font-medium text-slate-500 uppercase tracking-wider mb-3">Job Title</label>
-                    <input
-                      type="text"
-                      value={formData.Job_titel}
-                      onChange={(e) => handleChange("Job_titel", e.target.value)}
-                      className="w-full px-5 py-4 rounded-2xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 focus:border-slate-900 dark:focus:border-white focus:ring-0 outline-none transition-all dark:text-white font-light"
-                      placeholder="e.g. Senior Machine Learning Engineer"
-                      required
-                    />
+                  <div className="flex items-center gap-2 text-slate-400 mb-2">
+                    <Sparkles size={14} />
+                    <span className="text-[10px] font-bold uppercase tracking-widest">Role Details</span>
                   </div>
-                  <div>
-                    <label className="block text-xs font-medium text-slate-500 uppercase tracking-wider mb-3">Job Description</label>
-                    <textarea
-                      value={formData.job_description}
-                      onChange={(e) => handleChange("job_description", e.target.value)}
-                      className="w-full px-5 py-4 rounded-2xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 focus:border-slate-900 dark:focus:border-white focus:ring-0 outline-none transition-all h-32 resize-none dark:text-white font-light"
-                      placeholder="Paste job description or key requirements..."
-                      required
-                    />
-                  </div>
-                </div>
-              </div>
 
-              <div className="bg-white dark:bg-slate-900/80 backdrop-blur-xl rounded-3xl p-8 shadow-xl shadow-slate-200/30 dark:shadow-slate-900/30 border border-slate-200/50 dark:border-slate-800/50">
-                <div className="flex items-center gap-4 mb-8">
-                  <div className="w-10 h-10 rounded-xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center">
-                    <svg className="w-5 h-5 text-slate-600 dark:text-slate-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
-                    </svg>
-                  </div>
-                  <h3 className="text-lg font-medium text-slate-900 dark:text-white">Company Information</h3>
-                </div>
-
-                <div className="grid md:grid-cols-2 gap-6">
-                  <div>
-                    <label className="block text-xs font-medium text-slate-500 uppercase tracking-wider mb-3">Company Size</label>
-                    <select
-                      value={formData.company_size}
-                      onChange={(e) => handleChange("company_size", e.target.value)}
-                      className="w-full px-5 py-4 rounded-2xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 focus:border-slate-900 dark:focus:border-white focus:ring-0 outline-none transition-all dark:text-white font-light appearance-none cursor-pointer"
-                    >
-                      {COMPANY_SIZES.map(size => (
-                        <option key={size} value={size}>{size}</option>
-                      ))}
-                    </select>
-                  </div>
-                  <div>
-                    <label className="block text-xs font-medium text-slate-500 uppercase tracking-wider mb-3">Industry Sector</label>
-                    <select
-                      value={formData.sector}
-                      onChange={(e) => handleChange("sector", e.target.value)}
-                      className="w-full px-5 py-4 rounded-2xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 focus:border-slate-900 dark:focus:border-white focus:ring-0 outline-none transition-all dark:text-white font-light appearance-none cursor-pointer"
-                    >
-                      {SECTORS.map(sector => (
-                        <option key={sector} value={sector}>{sector}</option>
-                      ))}
-                    </select>
-                  </div>
-                  <div>
-                    <label className="block text-xs font-medium text-slate-500 uppercase tracking-wider mb-3">Founded Year</label>
-                    <input
-                      type="number"
-                      value={formData.Founded}
-                      onChange={(e) => handleChange("Founded", parseInt(e.target.value))}
-                      className="w-full px-5 py-4 rounded-2xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 focus:border-slate-900 dark:focus:border-white focus:ring-0 outline-none transition-all dark:text-white font-light"
-                      placeholder="e.g. 2010"
-                      required
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-xs font-medium text-slate-500 uppercase tracking-wider mb-3">State</label>
-                    <select
-                      value={formData.state}
-                      onChange={(e) => handleChange("state", e.target.value)}
-                      className="w-full px-5 py-4 rounded-2xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 focus:border-slate-900 dark:focus:border-white focus:ring-0 outline-none transition-all dark:text-white font-light appearance-none cursor-pointer"
-                    >
-                      {STATES.map(s => (
-                        <option key={s} value={s}>{s}</option>
-                      ))}
-                    </select>
-                  </div>
-                </div>
-              </div>
-
-              <button
-                type="submit"
-                disabled={isLoading}
-                className="w-full py-5 bg-slate-900 dark:bg-white text-white dark:text-slate-900 rounded-2xl font-medium text-sm tracking-wide transition-all hover:shadow-xl hover:shadow-slate-900/20 dark:hover:shadow-white/20 active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-3"
-              >
-                {isLoading ? (
-                  <>
-                    <svg className="animate-spin h-5 w-5" viewBox="0 0 24 24">
-                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
-                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
-                    </svg>
-                    Generating prediction...
-                  </>
-                ) : (
-                  <>
-                    <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M13 10V3L4 14h7v7l9-11h-7z" />
-                    </svg>
-                    Generate Prediction
-                  </>
-                )}
-              </button>
-            </form>
-          </div>
-
-          <div className="lg:col-span-4">
-            <div className="sticky top-8">
-              <div className={`bg-white dark:bg-slate-900/80 backdrop-blur-xl rounded-3xl p-8 shadow-xl shadow-slate-200/30 dark:shadow-slate-900/30 border border-slate-200/50 dark:border-slate-800/50 transition-all duration-500 ${result ? 'border-slate-900 dark:border-white' : ''}`}>
-                <h3 className="text-lg font-medium text-slate-900 dark:text-white mb-6">Result</h3>
-
-                {!result && !error && !isLoading && (
-                  <div className="text-center py-8">
-                    <div className="w-16 h-16 bg-slate-100 dark:bg-slate-800 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                      <svg className="w-8 h-8 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                      </svg>
+                  <div className="grid gap-6">
+                    <div className="space-y-2">
+                      <label className="text-[11px] font-bold text-black uppercase tracking-tight ml-1">Job Title</label>
+                      <input
+                        type="text"
+                        value={formData.Job_titel}
+                        onChange={(e) => handleChange("Job_titel", e.target.value)}
+                        className="w-full px-5 py-3.5 bg-slate-50 border border-slate-100 rounded-xl focus:bg-white focus:border-slate-300 outline-none transition-all text-[13px] font-medium text-black placeholder:text-slate-300"
+                        placeholder="e.g. Senior Frontend Developer"
+                        required
+                      />
                     </div>
-                    <p className="text-slate-500 dark:text-slate-400 font-light text-sm">Enter details and generate to see prediction</p>
-                  </div>
-                )}
 
-                {isLoading && (
-                  <div className="space-y-4 animate-pulse">
-                    <div className="h-4 w-1/3 bg-slate-200 dark:bg-slate-700 rounded-full" />
-                    <div className="h-12 w-full bg-slate-200 dark:bg-slate-700 rounded-2xl" />
-                    <div className="h-24 w-full bg-slate-200 dark:bg-slate-700 rounded-2xl" />
+                    <div className="space-y-2">
+                      <label className="text-[11px] font-bold text-black uppercase tracking-tight ml-1">Job Description</label>
+                      <textarea
+                        value={formData.job_description}
+                        onChange={(e) => handleChange("job_description", e.target.value)}
+                        className="w-full px-5 py-3.5 bg-slate-50 border border-slate-100 rounded-xl focus:bg-white focus:border-slate-300 outline-none transition-all text-[13px] font-medium text-black h-32 resize-none placeholder:text-slate-300"
+                        placeholder="Paste key requirements or job description here..."
+                        required
+                      />
+                    </div>
                   </div>
-                )}
+                </div>
 
-                {error && (
-                  <div className="p-5 bg-red-50 dark:bg-red-900/20 border border-red-100 dark:border-red-800/30 rounded-2xl">
-                    <p className="text-sm text-red-600 dark:text-red-400 text-center font-medium">{error}</p>
+                {/* Company & Context Section */}
+                <div className="space-y-6">
+                  <div className="flex items-center gap-2 text-slate-400 mb-2">
+                    <Building2 size={14} />
+                    <span className="text-[10px] font-bold uppercase tracking-widest">Organizational Context</span>
                   </div>
-                )}
 
-                {result && (
-                  <div className="space-y-6">
-                    <div>
-                      <span className="text-xs font-medium text-slate-500 uppercase tracking-wider">Predicted Salary</span>
-                      <div className="text-5xl font-light text-slate-900 dark:text-white mt-2">
+                  <div className="grid md:grid-cols-2 gap-6">
+                    <div className="space-y-2">
+                      <label className="text-[11px] font-bold text-black uppercase tracking-tight ml-1">Company Size</label>
+                      <select
+                        value={formData.company_size}
+                        onChange={(e) => handleChange("company_size", e.target.value)}
+                        className="w-full px-5 py-3.5 bg-slate-50 border border-slate-100 rounded-xl focus:bg-white focus:border-slate-300 outline-none transition-all text-[13px] font-medium text-black appearance-none cursor-pointer"
+                      >
+                        {COMPANY_SIZES.map(s => <option key={s} value={s}>{s}</option>)}
+                      </select>
+                    </div>
+
+                    <div className="space-y-2">
+                      <label className="text-[11px] font-bold text-black uppercase tracking-tight ml-1">Industry Sector</label>
+                      <select
+                        value={formData.sector}
+                        onChange={(e) => handleChange("sector", e.target.value)}
+                        className="w-full px-5 py-3.5 bg-slate-50 border border-slate-100 rounded-xl focus:bg-white focus:border-slate-300 outline-none transition-all text-[13px] font-medium text-black appearance-none cursor-pointer"
+                      >
+                        {SECTORS.map(s => <option key={s} value={s}>{s}</option>)}
+                      </select>
+                    </div>
+
+                    <div className="space-y-2">
+                      <label className="text-[11px] font-bold text-black uppercase tracking-tight ml-1">Year Founded</label>
+                      <div className="relative">
+                        <Calendar size={16} className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-400" />
+                        <input
+                          type="number"
+                          value={formData.Founded}
+                          onChange={(e) => handleChange("Founded", parseInt(e.target.value))}
+                          className="w-full pl-12 pr-5 py-3.5 bg-slate-50 border border-slate-100 rounded-xl focus:bg-white focus:border-slate-300 outline-none transition-all text-[13px] font-medium text-black"
+                          required
+                        />
+                      </div>
+                    </div>
+
+                    <div className="space-y-2">
+                      <label className="text-[11px] font-bold text-black uppercase tracking-tight ml-1">State Location</label>
+                      <div className="relative">
+                        <MapPin size={16} className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-400" />
+                        <select
+                          value={formData.state}
+                          onChange={(e) => handleChange("state", e.target.value)}
+                          className="w-full pl-12 pr-5 py-3.5 bg-slate-50 border border-slate-100 rounded-xl focus:bg-white focus:border-slate-300 outline-none transition-all text-[13px] font-medium text-black appearance-none cursor-pointer"
+                        >
+                          {STATES.map(s => <option key={s} value={s}>{s}</option>)}
+                        </select>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="pt-4">
+                  <button
+                    type="submit"
+                    disabled={isLoading}
+                    className="w-full flex items-center justify-center gap-3 py-4 bg-black text-white rounded-full font-bold text-sm tracking-tight hover:shadow-lg transition-all active:scale-[0.98] disabled:opacity-50 group"
+                  >
+                    {isLoading ? (
+                      <div className="flex items-center gap-2">
+                        <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                        <span>Analyzing...</span>
+                      </div>
+                    ) : (
+                      <>
+                        <span>Get Salary Benchmark</span>
+                        <ChevronRight size={18} className="group-hover:translate-x-1 transition-transform" />
+                      </>
+                    )}
+                  </button>
+                </div>
+              </form>
+            </div>
+          </motion.div>
+
+          {/* Side Results/Info Area */}
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.1 }}
+            className="space-y-6"
+          >
+            <AnimatePresence mode="wait">
+              {result ? (
+                <motion.div
+                  key="result"
+                  initial={{ opacity: 0, scale: 0.98 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.98 }}
+                  className="bg-black rounded-[2rem] p-8 text-white shadow-xl relative overflow-hidden group"
+                >
+                  <div className="absolute top-0 right-0 w-32 h-32 bg-white/5 -rotate-45 translate-x-12 -translate-y-12 transition-transform group-hover:scale-110" />
+
+                  <div className="relative z-10">
+                    <p className="text-white/40 text-[10px] font-bold uppercase tracking-widest mb-2">Estimated Annual Salary</p>
+                    <div className="flex items-baseline gap-2 mb-8">
+                      <span className="text-4xl font-bold tracking-tight">
                         ${result.predicted_salary.toLocaleString()}
-                      </div>
+                      </span>
+                      <span className="text-white/40 text-sm font-medium">/yr</span>
                     </div>
 
-                    <div className="p-5 bg-slate-50 dark:bg-slate-800/50 rounded-2xl">
-                      <div className="flex justify-between items-center mb-3">
-                        <span className="text-xs font-medium text-slate-500 uppercase tracking-wider">Confidence</span>
-                        <span className="text-sm font-medium text-slate-900 dark:text-white">94.8%</span>
+                    <div className="space-y-6">
+                      <div className="p-5 bg-white/5 rounded-2xl border border-white/10">
+                        <div className="flex justify-between items-center mb-3">
+                          <span className="text-[10px] font-bold uppercase tracking-widest opacity-40">Confidence Level</span>
+                          <span className="text-xs font-bold">94.8%</span>
+                        </div>
+                        <div className="h-2 bg-white/10 rounded-full overflow-hidden">
+                          <motion.div
+                            initial={{ width: 0 }}
+                            animate={{ width: "94.8%" }}
+                            transition={{ duration: 1, ease: "easeOut" }}
+                            className="h-full bg-emerald-400 rounded-full"
+                          />
+                        </div>
                       </div>
-                      <div className="h-1.5 bg-slate-200 dark:bg-slate-700 rounded-full overflow-hidden">
-                        <div className="h-full bg-slate-900 dark:bg-white w-[94.8%] rounded-full" />
+
+                      <div className="flex items-start gap-3 text-[11px] opacity-60 bg-white/5 p-4 rounded-xl">
+                        <AlertCircle size={16} className="mt-0.5 shrink-0" />
+                        <p className="font-medium leading-normal">Estimation based on data points from similar roles in our latest training dataset.</p>
                       </div>
                     </div>
                   </div>
-                )}
+                </motion.div>
+              ) : (
+                <motion.div
+                  key="empty"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  className="bg-white rounded-[2rem] p-10 border-2 border-dashed border-slate-100 text-center flex flex-col items-center justify-center min-h-[350px]"
+                >
+                  <div className="w-16 h-16 rounded-2xl bg-slate-50 flex items-center justify-center text-slate-300 mb-6">
+                    <DollarSign size={32} />
+                  </div>
+                  <h4 className="text-lg font-bold text-black mb-2 tracking-tight">Ready to Benchmark?</h4>
+                  <p className="text-slate-400 text-[11px] font-medium max-w-[200px] leading-relaxed">Fill in the role details to generate your AI salary insights.</p>
+                </motion.div>
+              )}
+            </AnimatePresence>
+
+            <div className="bg-white rounded-[2rem] p-8 border border-slate-100 shadow-sm">
+              <h4 className="font-bold text-black mb-6 text-sm tracking-tight uppercase tracking-wider">Historical Trends</h4>
+              <div className="space-y-3">
+                {[
+                  { role: "Software Eng.", loc: "California", sal: "$142k" },
+                  { role: "Data Analyst", loc: "New York", sal: "$95k" },
+                  { role: "Product Mgr.", loc: "Texas", sal: "$118k" },
+                ].map((trend, i) => (
+                  <div key={i} className="flex justify-between items-center text-[12px] p-4 bg-slate-50/50 hover:bg-slate-50 border border-transparent hover:border-slate-100 rounded-xl transition-all group cursor-default">
+                    <div>
+                      <p className="font-bold text-black tracking-tight group-hover:translate-x-0.5 transition-transform">{trend.role}</p>
+                      <p className="text-[10px] font-semibold text-slate-400 uppercase tracking-wider">{trend.loc}</p>
+                    </div>
+                    <span className="font-bold text-black text-sm">{trend.sal}</span>
+                  </div>
+                ))}
               </div>
             </div>
-          </div>
+          </motion.div>
         </div>
       </div>
-    </div>
+    </DashboardLayout>
   );
 }
+
