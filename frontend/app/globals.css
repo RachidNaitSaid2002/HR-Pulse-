@@ -1,0 +1,123 @@
+@import "tailwindcss";
+
+@theme inline {
+  --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+
+  /* ElevenLabs Inspired Color Palette */
+  --color-brand-50: #f8fafc;
+  --color-brand-100: #f1f5f9;
+  --color-brand-200: #e2e8f0;
+  --color-brand-500: #0f172a;
+  --color-brand-600: #020617;
+
+  --color-accent-pink: #ff0080;
+  --color-accent-blue: #0070f3;
+
+  /* Refined Shadows & Blurs */
+  --shadow-premium: 0 0 0 1px rgba(0, 0, 0, 0.06), 0 1px 2px 0 rgba(0, 0, 0, 0.04), 0 2px 4px 0 rgba(0, 0, 0, 0.04);
+  --shadow-premium-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+  --backdrop-blur-premium: blur(8px);
+  
+  /* Animations */
+  --animate-gradient: gradient 3s ease infinite;
+  
+  @keyframes gradient {
+    0%, 100% {
+      background-size: 200% auto;
+      background-position: 0% center;
+    }
+    50% {
+      background-size: 200% auto;
+      background-position: 100% center;
+    }
+  }
+}
+
+:root {
+  --background: #ffffff;
+  --foreground: #000000;
+  --subtle-text: #64748b;
+  --border-subtle: #f1f5f9;
+
+  /* Smooth transitions */
+  --transition-slow: 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-medium: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-fast: 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #000000;
+    --foreground: #ffffff;
+    --border-subtle: #1e293b;
+    --subtle-text: #94a3b8;
+  }
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans);
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Base Vignette Glow */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background: radial-gradient(circle at 50% -20%, rgba(120, 119, 198, 0.08), transparent 80%);
+  pointer-events: none;
+  z-index: -1;
+}
+
+/* Clean UI Classes */
+.glass-panel {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: var(--backdrop-blur-premium);
+  -webkit-backdrop-filter: var(--backdrop-blur-premium);
+  border: 1px solid var(--border-subtle);
+  box-shadow: var(--shadow-premium);
+}
+
+.highlighter {
+  position: relative;
+  display: inline-block;
+  padding: 0 2px;
+  background: linear-gradient(120deg, #84fab0 0%, #8fd3f4 100%);
+  background-repeat: no-repeat;
+  background-size: 100% 0.3em;
+  background-position: 0 88%;
+  transition: background-size 0.25s ease-in;
+}
+
+.highlighter:hover {
+  background-size: 100% 88%;
+}
+
+/* Premium Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.5s ease-out forwards;
+}
+
+/* Custom Utilities for ElevenLabs Style */
+.text-balance {
+  text-wrap: balance;
+}
+
+.mask-fade-bottom {
+  mask-image: linear-gradient(to bottom, black 50%, transparent 100%);
+}
