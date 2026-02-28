@@ -2,9 +2,9 @@ name: HR-Pulse CI
 
 on:
   push:
-    branches: [ main, feature/** ]
+    branches: [ main, develop, feature/** ]
   pull_request:
-    branches: [ main ]
+    branches: [ develop ]
 
 jobs:
   # Job 1: Check code quality with Ruff
@@ -36,6 +36,7 @@ jobs:
       - name: Run tests
         env:
           PYTHONPATH: backend
+          DATABASE_URL: sqlite:///./test.db
         run: pytest -v
 
   # Job 3: Verify Docker builds
