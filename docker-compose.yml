@@ -1,3 +1,4 @@
+services:
   # Jaeger : L'outil de visualisation des traces
   jaeger:
     image: jaegertracing/all-in-one:latest
@@ -5,6 +6,9 @@
       - "16686:16686" # UI
       - "4317:4317"  # OTLP gRPC
       - "4318:4318"  # OTLP HTTP
+    networks:
+      - hr-pulse-network
+
   backend:
     build:
       context: .
@@ -17,6 +21,8 @@
       - ./backend/app:/app/app
       - ./scripts:/app/scripts
       - ./ml:/app/ml
+    depends_on:
+      - jaeger
     networks:
       - hr-pulse-network
 
@@ -25,11 +31,11 @@
       context: ./frontend
       dockerfile: Dockerfile
       args:
-        - NEXT_PUBLIC_API_URL=http://95bacdd00740:8000/api/v1
+        - NEXT_PUBLIC_API_URL=http://backend:8000/api/v1
     ports:
       - "3000:3000"
     environment:
-      - NEXT_PUBLIC_API_URL=http://95bacdd00740:8000/api/v1
+      - NEXT_PUBLIC_API_URL=http://backend:8000/api/v1
     depends_on:
       - backend
     networks:
