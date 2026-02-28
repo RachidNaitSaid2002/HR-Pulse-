@@ -9,7 +9,7 @@ on:
 jobs:
   # Job 1: Check code quality with Ruff
   lint:
-    name: 🧹 Linting (Ruff)
+    name: Linting (Ruff)
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -20,7 +20,7 @@ jobs:
 
   # Job 2: Run Unit Tests with Pytest
   test:
-    name: 🧪 Unit Tests (Pytest)
+    name: Unit Tests (Pytest)
     needs: lint
     runs-on: ubuntu-latest
     steps:
@@ -43,7 +43,7 @@ jobs:
 
   # Job 3: Verify Docker builds
   build:
-    name: 🐳 Docker Build Verification
+    name:  Docker Build Verification
     needs: test
     runs-on: ubuntu-latest
     steps:
