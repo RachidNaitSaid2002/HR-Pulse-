@@ -2,8 +2,8 @@
 
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { useToast } from "@/app/lib/toast";
-import { predictApi } from "@/app/lib/api";
+import { useToast } from "@/lib/toast";
+import { predictApi } from "@/lib/api";
 import { DashboardLayout } from "../components/dashboard/DashboardLayout";
 import { StatsGrid } from "../components/dashboard/StatsGrid";
 import {

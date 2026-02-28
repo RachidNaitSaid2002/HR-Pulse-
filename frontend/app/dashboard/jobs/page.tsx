@@ -3,8 +3,8 @@
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { DashboardLayout } from "../../components/dashboard/DashboardLayout";
-import { jobsApi } from "../../../lib/api";
-import { useToast } from "../../lib/toast";
+import { jobsApi } from "@/lib/api";
+import { useToast } from "@/lib/toast";
 import {
     Briefcase,
     Search,

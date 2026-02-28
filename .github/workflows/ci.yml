@@ -1,0 +1,59 @@
+name: HR-Pulse CI
+
+on:
+  push:
+    branches: [ main, develop, feature/** ]
+  pull_request:
+    branches: [ develop ]
+
+jobs:
+  # Job 1: Check code quality with Ruff
+  lint:
+    name: Linting (Ruff)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Ruff
+        run: pip install ruff
+      - name: Run Ruff
+        run: ruff check .
+
+  # Job 2: Run Unit Tests with Pytest
+  test:
+    name: Unit Tests (Pytest)
+    needs: lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+      - name: Run tests
+        env:
+          PYTHONPATH: backend
+          DATABASE_URL: sqlite:///./test.db
+          endpoint: https://dummy-endpoint.cognitiveservices.azure.com/
+          key: dummy-key
+        run: pytest -v
+
+  # Job 3: Verify Docker builds
+  build:
+    name:  Docker Build Verification
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Build Backend Image
+        run: docker build -f backend/Dockerfile -t hr-pulse-backend .
+        
+      - name: Build Frontend Image
+        run: |
+          docker build \
+            --build-arg NEXT_PUBLIC_API_URL=http://localhost:8000/api/v1 \
+            -t hr-pulse-frontend ./frontend

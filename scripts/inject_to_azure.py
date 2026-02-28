@@ -1,8 +1,10 @@
-import os
-import pandas as pd
 import json
-from sqlalchemy import create_engine, text
+import os
+
+import pandas as pd
 from dotenv import load_dotenv
+from sqlalchemy import create_engine, text
+
 try:
     from scripts.Get_Skills import get_skills
 except ModuleNotFoundError:
@@ -24,7 +26,10 @@ engine = create_engine(DATABASE_URL)
 def create_table_if_not_exists():
     with engine.connect() as conn:
         create_query = """
-        IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[Jobs]') AND type in (N'U'))
+        IF NOT EXISTS (
+            SELECT * FROM sys.objects 
+            WHERE object_id = OBJECT_ID(N'[dbo].[Jobs]') AND type in (N'U')
+        )
         BEGIN
             CREATE TABLE [dbo].[Jobs] (
                 [id] INT PRIMARY KEY,
@@ -38,7 +43,10 @@ def create_table_if_not_exists():
     print("Table [dbo].[Jobs] verified/created.")
 
 def inject_data(limit=100):
-    csv_path = "/media/rachid/d70e3dc6-74e7-4c87-96bc-e4c3689c979a3/workspace/Projects/HR-Pulse/data/raw/Clean_1.csv"
+    csv_path = (
+        "/media/rachid/d70e3dc6-74e7-4c87-96bc-e4c3689c979a3/"
+        "workspace/Projects/HR-Pulse/data/raw/Clean_1.csv"
+    )
     
     # Load dataset
     df = pd.read_csv(csv_path)

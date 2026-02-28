@@ -1,6 +1,7 @@
-import pytest
-from unittest.mock import patch, MagicMock
+from unittest.mock import MagicMock, patch
+
 from scripts.Pipline import Predict_salary
+
 
 @patch("scripts.Pipline.joblib.load")
 @patch("scripts.Pipline.pd.read_csv")

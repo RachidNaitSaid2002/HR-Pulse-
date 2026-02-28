@@ -1,16 +1,17 @@
-from fastapi import FastAPI
-from fastapi.middleware.cors import CORSMiddleware
-from app.api.v1.api import api_router
-from app.db.database import engine, Base
+from app.core.tracing import setup_tracing
+from opentelemetry.instrumentation.fastapi import FastAPIInstrumentor
 
-# Create database tables
-Base.metadata.create_all(bind=engine)
+# Initialize Tracing
+setup_tracing("hr-pulse-backend")
 
 app = FastAPI(
     title="HR-Pulse API",
     description="Backend Service for HR-Pulse predictions and authentication.",
     version="1.0.0",
 )
+
+# Instrument FastAPI
+FastAPIInstrumentor.instrument_app(app)
 
 # Configure CORS
 app.add_middleware(

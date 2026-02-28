@@ -1,10 +1,11 @@
-from fastapi import APIRouter, Depends, HTTPException
-from app.api import deps
-from app.schemas.predict import JobData
-from app.models.user import User
-
-import sys
 import os
+import sys
+
+from app.api import deps
+from app.models.user import User
+from app.schemas.predict import JobData
+from fastapi import APIRouter, Depends, HTTPException
+
 # Allow importing from scripts folder
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../../../../../")))
 from scripts.Pipline import Predict_salary

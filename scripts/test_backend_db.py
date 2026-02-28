@@ -1,4 +1,3 @@
-import os
 import sys
 
 # Add the project root and backend to path for imports
@@ -8,6 +7,7 @@ sys.path.append("/media/rachid/d70e3dc6-74e7-4c87-96bc-e4c3689c979a3/workspace/P
 from app.db.database import SessionLocal, engine
 from app.models.job import Job
 from sqlalchemy import text
+
 
 def test_db():
     print("Testing database connection...")

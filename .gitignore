@@ -4,14 +4,16 @@ __pycache__/
 *$py.class
 *.so
 .Python
+# Python build-time folders should be ignored specifically if needed, 
+# but a global lib/ ignore causes issues with frontend files.
 build/
 develop-eggs/
 dist/
 downloads/
 eggs/
 .eggs/
-lib/
-lib64/
+# lib/ removed - too broad
+# lib64/ removed - too broad
 parts/
 sdist/
 var/
@@ -63,4 +65,5 @@ logs/
 .terraform/
 infrastructure/terraform/
 
-test.py
+test.pytest.db
+.pytest_cache/

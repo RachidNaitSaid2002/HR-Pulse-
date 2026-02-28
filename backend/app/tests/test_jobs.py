@@ -1,5 +1,5 @@
-import pytest
 from fastapi import status
+
 
 def test_get_jobs_unauthorized(client):
     response = client.get("/api/v1/jobs/")

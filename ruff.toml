@@ -1,0 +1,21 @@
+# Ruff configuration for HR-Pulse
+# Simple and clean rules to ensure code quality
+
+line-length = 100
+target-version = "py312"
+exclude = ["ml/notebooks/**"]
+
+[lint]
+# Select rules: E (Error), F (Pyflakes), I (Isort)
+select = ["E", "F", "I"]
+ignore = []
+
+# Allow autofix for all enabled rules (when possible)
+fixable = ["ALL"]
+unfixable = []
+
+[format]
+quote-style = "double"
+indent-style = "space"
+skip-magic-trailing-comma = false
+line-ending = "auto"
