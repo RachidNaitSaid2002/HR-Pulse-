@@ -2,7 +2,7 @@
 
 import { Sidebar } from "./Sidebar";
 import { TopHeader } from "./TopHeader";
-import { useToast } from "@/app/lib/toast";
+import { useToast } from "@/lib/toast";
 
 export function DashboardLayout({ children }: { children: React.ReactNode }) {
     const { showToast } = useToast();

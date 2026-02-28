@@ -5,8 +5,8 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { Input } from "@/app/components/Input";
-import { useToast } from "@/app/lib/toast";
-import { authApi } from "@/app/lib/api";
+import { useToast } from "@/lib/toast";
+import { authApi } from "@/lib/api";
 
 
 function getPasswordStrength(password: string): { score: number; label: string; color: string } {

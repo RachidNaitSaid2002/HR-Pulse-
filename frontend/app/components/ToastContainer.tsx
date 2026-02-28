@@ -1,6 +1,6 @@
 "use client";
 
-import { useToast } from "../lib/toast";
+import { useToast } from "@/lib/toast";
 
 export function ToastContainer() {
   const { toasts, removeToast } = useToast();
@@ -13,10 +13,10 @@ export function ToastContainer() {
         <div
           key={toast.id}
           className={`px-5 py-4 rounded-xl shadow-xl shadow-slate-200/50 flex items-center gap-3 min-w-[280px] animate-in slide-in-from-right duration-500 bg-white border ${toast.type === "success"
-              ? "border-emerald-100 text-emerald-500"
-              : toast.type === "error"
-                ? "border-rose-100 text-rose-500"
-                : "border-slate-100 text-black"
+            ? "border-emerald-100 text-emerald-500"
+            : toast.type === "error"
+              ? "border-rose-100 text-rose-500"
+              : "border-slate-100 text-black"
             }`}
         >
           {toast.type === "success" && (
