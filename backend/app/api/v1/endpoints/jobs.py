@@ -1,10 +1,12 @@
-from fastapi import APIRouter, Depends, Query
+from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 from typing import List
 import json
 from app.db.database import get_db
 from app.models.job import Job as JobModel
 from app.schemas.job import Job as JobSchema
+from app.api import deps
+from app.models.user import User
 
 router = APIRouter()
 
@@ -12,7 +14,8 @@ router = APIRouter()
 def get_jobs(
     skip: int = 0, 
     limit: int = 100, 
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    current_user: User = Depends(deps.get_current_user)
 ):
     try:
         jobs = db.query(JobModel).order_by(JobModel.id).offset(skip).limit(limit).all()

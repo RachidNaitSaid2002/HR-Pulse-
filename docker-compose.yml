@@ -1,14 +1,16 @@
 services:
   backend:
     build:
-      context: ./backend
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: backend/Dockerfile
     ports:
       - "8000:8000"
     env_file:
       - .env
     volumes:
-      - ./backend:/app
+      - ./backend/app:/app/app
+      - ./scripts:/app/scripts
+      - ./ml:/app/ml
     networks:
       - hr-pulse-network
 
@@ -16,10 +18,12 @@ services:
     build:
       context: ./frontend
       dockerfile: Dockerfile
+      args:
+        - NEXT_PUBLIC_API_URL=http://95bacdd00740:8000/api/v1
     ports:
       - "3000:3000"
     environment:
-      - NEXT_PUBLIC_API_URL=http://localhost:8000
+      - NEXT_PUBLIC_API_URL=http://95bacdd00740:8000/api/v1
     depends_on:
       - backend
     networks:
