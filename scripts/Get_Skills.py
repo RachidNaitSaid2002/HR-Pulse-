@@ -8,12 +8,25 @@ load_dotenv()
 
 endpoint = os.getenv("endpoint")
 key = os.getenv("key")
-client = TextAnalyticsClient(endpoint=endpoint, credential=AzureKeyCredential(key))
 
+def get_client():
+    """Lazily initialize the Azure Text Analytics client."""
+    if not endpoint or not key:
+        return None
+    try:
+        return TextAnalyticsClient(endpoint=endpoint, credential=AzureKeyCredential(key))
+    except Exception:
+        return None
 
 def get_skills(job_description):
     """Extracts unique skills from a job description using Azure Text Analytics."""
     if not job_description or not isinstance(job_description, str):
+        return []
+
+    client = get_client()
+    if not client:
+        # If client cannot be initialized (e.g., in CI or missing keys), 
+        # return empty list or fallback logic.
         return []
 
     # Azure has a 5000 character limit per document

@@ -37,6 +37,8 @@ jobs:
         env:
           PYTHONPATH: backend
           DATABASE_URL: sqlite:///./test.db
+          endpoint: https://dummy-endpoint.cognitiveservices.azure.com/
+          key: dummy-key
         run: pytest -v
 
   # Job 3: Verify Docker builds
