@@ -63,4 +63,5 @@ logs/
 .terraform/
 infrastructure/terraform/
 
-test.py
+test.pytest.db
+.pytest_cache/
