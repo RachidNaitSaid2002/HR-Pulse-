@@ -1,5 +1,10 @@
+import os
 import joblib
 import pandas as pd
+
+# Set base directory relative to this script's location (scripts/Pipline.py)
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
 try:
     from scripts.Get_Skills import get_skills
 except ModuleNotFoundError:
@@ -37,15 +42,18 @@ def Predict_salary(job_description, Founded, Job_titel, company_size, sector, in
     company_size_encoded = size_order.get(company_size, 0)
 
     # sector encoding
-    le_sector = joblib.load('./ml/models/le_sector.joblib')
+    le_sector_path = os.path.join(BASE_DIR, 'ml', 'models', 'le_sector.joblib')
+    le_sector = joblib.load(le_sector_path)
     sector_encoded = le_sector.transform([sector])[0]
 
     # industry encoding
-    le_industry = joblib.load('./ml/models/le_industry.joblib')
+    le_industry_path = os.path.join(BASE_DIR, 'ml', 'models', 'le_industry.joblib')
+    le_industry = joblib.load(le_industry_path)
     industry_encoded = le_industry.transform([industry])[0]
 
     # state encoding
-    le_state = joblib.load('./ml/models/le_state.joblib')
+    le_state_path = os.path.join(BASE_DIR, 'ml', 'models', 'le_state.joblib')
+    le_state = joblib.load(le_state_path)
     state_encoded = le_state.transform([state])[0]
     
     # custom job_clean encoding
@@ -78,7 +86,8 @@ def Predict_salary(job_description, Founded, Job_titel, company_size, sector, in
     })
 
     # predict
-    model = joblib.load('./ml/models/xgboost_model.joblib')
+    model_path = os.path.join(BASE_DIR, 'ml', 'models', 'xgboost_model.joblib')
+    model = joblib.load(model_path)
     prediction = model.predict(df)
 
     return prediction[0]

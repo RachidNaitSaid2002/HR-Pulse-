@@ -8,6 +8,8 @@ RUN npm ci
 
 # Copy code and build
 COPY . .
+ARG NEXT_PUBLIC_API_URL
+ENV NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL
 RUN npm run build
 
 # Stage 2: Runner
