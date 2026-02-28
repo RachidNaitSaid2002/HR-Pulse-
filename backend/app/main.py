@@ -1,7 +1,7 @@
+from app.api.v1.api import api_router
+from app.db.database import Base, engine
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from app.api.v1.api import api_router
-from app.db.database import engine, Base
 
 # Create database tables
 Base.metadata.create_all(bind=engine)

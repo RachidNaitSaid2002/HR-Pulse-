@@ -1,6 +1,8 @@
-from pydantic import BaseModel
-from typing import List, Optional
 import json
+from typing import List, Optional
+
+from pydantic import BaseModel
+
 
 class JobBase(BaseModel):
     id: int
@@ -18,6 +20,6 @@ class Job(JobBase):
         if self.skills_extracted:
             try:
                 return json.loads(self.skills_extracted)
-            except:
+            except (json.JSONDecodeError, TypeError):
                 return []
         return []

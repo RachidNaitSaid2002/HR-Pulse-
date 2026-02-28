@@ -1,12 +1,13 @@
-from fastapi import APIRouter, Depends
-from sqlalchemy.orm import Session
-from typing import List
 import json
+from typing import List
+
+from app.api import deps
 from app.db.database import get_db
 from app.models.job import Job as JobModel
-from app.schemas.job import Job as JobSchema
-from app.api import deps
 from app.models.user import User
+from app.schemas.job import Job as JobSchema
+from fastapi import APIRouter, Depends
+from sqlalchemy.orm import Session
 
 router = APIRouter()
 

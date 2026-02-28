@@ -1,6 +1,7 @@
+import os
+
 from azure.ai.textanalytics import TextAnalyticsClient
 from azure.core.credentials import AzureKeyCredential
-import os
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -15,6 +16,7 @@ def get_skills(job_description):
     if not job_description or not isinstance(job_description, str):
         return []
 
+    # Azure has a 5000 character limit per document
     truncated = job_description[:5000]
 
     try:
@@ -29,11 +31,18 @@ def get_skills(job_description):
             }
         )
     except Exception:
+        # Fallback to empty list if API fails
         return []
 
 
 if __name__ == "__main__":
-    Skills = get_skills(
-        "Capgemini recrute un Développeur Python pour rejoindre son équipe à Casablanca.Vous travaillerez sur des projets cloud utilisant Azure et SQL Server.Une expérience de 3 ans en Django est souhaitée.Envoyez votre candidature à recrutement@capgemini.com"
+    # Example job description for testing the skills extraction
+    test_description = (
+        "Capgemini recrute un Développeur Python pour rejoindre son équipe à Casablanca. "
+        "Vous travaillerez sur des projets cloud utilisant Azure et SQL Server. "
+        "Une expérience de 3 ans en Django est souhaitée. "
+        "Envoyez votre candidature à recrutement@capgemini.com"
     )
-    print(Skills)
+    
+    extracted_skills = get_skills(test_description)
+    print(f"Extracted Skills: {extracted_skills}")

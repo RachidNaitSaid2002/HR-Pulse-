@@ -1,5 +1,5 @@
-import pytest
 from fastapi import status
+
 
 def test_signup(client):
     """
