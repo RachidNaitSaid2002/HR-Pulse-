@@ -3,48 +3,50 @@ import os
 import joblib
 import pandas as pd
 
-# Set base directory relative to this script's location (scripts/Pipline.py)
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-
+# Use the skills extraction script we built in Phase 8
 try:
     from scripts.Get_Skills import get_skills
 except ModuleNotFoundError:
     from Get_Skills import get_skills
 
-def get_job_clean_encoded(title):
-    """Encodes the job title based on specific keywords."""
+# --- 1. Setup Paths ---
+# We find the folder where this script lives, so we can find our ML models.
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+def get_job_category_number(title):
+    """
+    Turns a text job title into a simple number that the Machine Learning model 
+    can understand (Encoding).
+    """
     title = title.lower()
     if 'machine learning' in title or 'ml' in title:
-        return 3
+        return 3 # Scientist level
     elif 'data scientist' in title or 'scientist' in title:
         return 2
-    elif (
-        'data engineer' in title 
-        or 'engineer' in title 
-        or 'développeur' in title 
-        or 'developer' in title
-    ):
-        return 1
-    elif 'data analyst' in title or 'analyst' in title:
-        return 0
-    elif 'manager' in title or 'director' in title or 'senior' in title or 'lead' in title:
-        return 5
+    elif any(word in title for word in ['engineer', 'développeur', 'developer']):
+        return 1 # Engineer level
+    elif 'analyst' in title:
+        return 0 # Analyst level
+    elif any(word in title for word in ['manager', 'director', 'senior', 'lead']):
+        return 5 # Senior/Management
     else:
-        return 4
+        return 4 # Other
 
 def Predict_salary(
     job_description, Founded, Job_titel, company_size, sector, industry, state, rating=3.5
 ):
     """
-    Main prediction logic:
-    1. Encodes categorical variables.
-    2. Extracts skills.
-    3. Calculates derived numeric fields.
-    4. Scales features and performs prediction using XGBoost.
+    The main logic to calculate a salary prediction.
+    Steps:
+    1. Convert text descriptions into numbers.
+    2. Extract skills from the description.
+    3. Normalize numbers (scaling) so the model isn't confused by big values.
+    4. Feed everything into the XGBoost model.
     """
 
-    # company_size encoding
-    size_order = {
+    # --- Step 1: Encode Company Size ---
+    # We map text labels to numbers 0-7.
+    size_mapping = {
         '1 to 50 employees': 1,
         '51 to 200 employees': 2,
         '201 to 500 employees': 3,
@@ -54,78 +56,70 @@ def Predict_salary(
         '10000+ employees': 7,
         'Unknown': 0
     }
+    company_size_encoded = size_mapping.get(company_size, 0)
 
-    company_size_encoded = size_order.get(company_size, 0)
-
-    # sector encoding
-    le_sector_path = os.path.join(BASE_DIR, 'ml', 'models', 'le_sector.joblib')
-    le_sector = joblib.load(le_sector_path)
+    # --- Step 2: Encode Categorical Features ---
+    # We use 'Label Encoders' (.joblib files) that were saved during training.
+    # They remember how to turn 'Information Technology' into a specific number.
+    le_sector = joblib.load(os.path.join(BASE_DIR, 'ml', 'models', 'le_sector.joblib'))
     sector_encoded = le_sector.transform([sector])[0]
 
-    # industry encoding
-    le_industry_path = os.path.join(BASE_DIR, 'ml', 'models', 'le_industry.joblib')
-    le_industry = joblib.load(le_industry_path)
+    le_industry = joblib.load(os.path.join(BASE_DIR, 'ml', 'models', 'le_industry.joblib'))
     industry_encoded = le_industry.transform([industry])[0]
 
-    # state encoding
-    le_state_path = os.path.join(BASE_DIR, 'ml', 'models', 'le_state.joblib')
-    le_state = joblib.load(le_state_path)
+    le_state = joblib.load(os.path.join(BASE_DIR, 'ml', 'models', 'le_state.joblib'))
     state_encoded = le_state.transform([state])[0]
     
-    # custom job_clean encoding
-    job_clean_encoded = get_job_clean_encoded(Job_titel)
+    # Use our custom helper for the job title
+    job_category_encoded = get_job_category_number(Job_titel)
 
-    # derived numeric fields
+    # --- Step 3: Derived Numeric Fields ---
     company_age = 2026 - Founded
-    skills_count = len(get_skills(job_description))
-    desc_length = len(job_description)
+    skills_list = get_skills(job_description)
+    skills_count = len(skills_list)
+    description_length = len(job_description)
     title_length = len(Job_titel)
     
-    # Scaling numeric features using discovered means and stds
-    company_age_scaled = (company_age - 37.24731182795699) / 37.46988924857682
-    skills_count_scaled = (skills_count - 48.54531490015361) / 18.700871662510927
-    desc_length_scaled = (desc_length - 3484.430107526882) / 1622.7597056617294
-    title_length_scaled = (title_length - 22.359447004608295) / 13.838540618613969
+    # --- Step 4: Normalization (Scaling) ---
+    # IMPORTANT for beginners: ML models work best when numbers are between -3 and 3.
+    # We subtract the average (mean) and divide by the spread (std deviation).
+    # These numbers below come directly from our training dataset analysis.
+    age_scaled = (company_age - 37.25) / 37.47
+    skills_scaled = (skills_count - 48.55) / 18.70
+    desc_scaled = (description_length - 3484.43) / 1622.76
+    title_scaled = (title_length - 22.36) / 13.84
 
-    # Create dataframe matching XGBoost feature order exactly
-    df = pd.DataFrame({
+    # --- Step 5: Final Prediction ---
+    # Create a small table (DataFrame) with exactly the columns the model expects.
+    input_data = pd.DataFrame({
         'Rating': [rating],
-        'company_age': [company_age_scaled],
-        'skills_count': [skills_count_scaled],
-        'desc_length': [desc_length_scaled],
-        'title_length': [title_length_scaled],
-        'job_clean_encoded': [job_clean_encoded],
+        'company_age': [age_scaled],
+        'skills_count': [skills_scaled],
+        'desc_length': [desc_scaled],
+        'title_length': [title_scaled],
+        'job_clean_encoded': [job_category_encoded],
         'size_encoded': [company_size_encoded],
         'sector_encoded': [sector_encoded],
         'industry_encoded': [industry_encoded],
         'state_encoded': [state_encoded]
     })
 
-    # Predict using the trained XGBoost model
-    model_path = os.path.join(BASE_DIR, 'ml', 'models', 'xgboost_model.joblib')
-    model = joblib.load(model_path)
-    prediction = model.predict(df)
+    # Load the XGBoost brain and ask it for the answer
+    model = joblib.load(os.path.join(BASE_DIR, 'ml', 'models', 'xgboost_model.joblib'))
+    prediction = model.predict(input_data)
 
     return prediction[0]
 
-
+# --- 6. Quick Test ---
 if __name__ == "__main__":
-    # Example execution for testing
-    test_description = (
-        "Capgemini recrute un Développeur Python pour rejoindre son équipe à Casablanca. "
-        "Vous travaillerez sur des projets cloud utilisant Azure et SQL Server. "
-        "Une expérience de 3 ans en Django est souhaitée. "
-        "Envoyez votre candidature à recrutement@capgemini.com"
-    )
-    
-    predicted_salary = Predict_salary(
-        job_description=test_description, 
-        Founded=2019, 
-        Job_titel="Développeur Python", 
-        company_size="1 to 50 employees", 
+    test_desc = "Looking for a Python Developer with 3 years experience in Casablanca."
+    salary = Predict_salary(
+        job_description=test_desc, 
+        Founded=2010, 
+        Job_titel="Python Developer", 
+        company_size="51 to 200 employees", 
         sector="Information Technology", 
-        industry="Computer Hardware & Software", 
+        industry="Software", 
         state="MA"
     )
-    
-    print(f"Predicted Salary: {predicted_salary}")
+    print(f"💰 Predicted Salary: ${salary:.2f}K")

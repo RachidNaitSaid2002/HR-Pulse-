@@ -56,7 +56,11 @@ const COMPANY_SIZES = [
 const STATES = ["CA", "NY", "TX", "WA", "MA", "IL", "FL", "GA", "NC", "PA", "OH", "CO", "VA"];
 
 export default function PredictPage() {
+  // --- 1. State Management ---
+  // A 'state' is a piece of memory that React uses to keep track of what's happening.
   const { showToast } = useToast();
+
+  // This state holds all the information the user types into the form.
   const [formData, setFormData] = useState<JobData>({
     job_description: "",
     Founded: 2010,
@@ -68,36 +72,59 @@ export default function PredictPage() {
     rating: 3.5,
   });
 
+  // These states track if we are waiting for an answer (loading), 
+  // or if we have a result or an error to show.
   const [isLoading, setIsLoading] = useState(false);
   const [result, setResult] = useState<{ predicted_salary: number } | null>(null);
   const [error, setError] = useState<string | null>(null);
 
-  const handleChange = (field: keyof JobData, value: string | number) => {
-    setFormData((prev) => ({ ...prev, [field]: value }));
+  // --- 2. Input Handling ---
+  /**
+   * This helper function updates our formData whenever the user types something.
+   * It takes the 'field' name (like 'Job_titel') and the new 'value'.
+   */
+  const handleInputChange = (field: keyof JobData, value: string | number) => {
+    setFormData((previousData) => ({
+      ...previousData,
+      [field]: value
+    }));
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsLoading(true);
-    setResult(null);
-    setError(null);
+  // --- 3. Form Submission ---
+  /**
+   * This function runs when the user clicks the "Get Salary" button.
+   * It talks to our Backend API to get the prediction.
+   */
+  const handleFormSubmit = async (event: React.FormEvent) => {
+    event.preventDefault(); // Prevents the browser from refreshing the page.
+
+    setIsLoading(true); // Show the loading spinner.
+    setResult(null);    // Reset previous results.
+    setError(null);     // Reset previous errors.
 
     try {
+      // We need to be logged in to make a prediction.
       const token = localStorage.getItem("token");
       if (!token) {
+        // If not logged in, go to the sign-in page.
         window.location.href = "/signin";
         return;
       }
 
-      const data = await predictApi.getPrediction(formData, token);
-      setResult(data);
-      showToast("Prediction successful!", "success");
+      // We 'call' the backend and wait for the prediction.
+      const responseData = await predictApi.getPrediction(formData, token);
+
+      // Update our screen with the outcome!
+      setResult(responseData);
+      showToast("Success! Calculation complete.", "success");
+
     } catch (err: any) {
-      const message = err.message || "Unable to connect to service.";
-      setError(message);
-      showToast(message, "error");
+      // If something went wrong (like the server is down), we show an error.
+      const errorMessage = err.message || "Something went wrong. Please try again.";
+      setError(errorMessage);
+      showToast(errorMessage, "error");
     } finally {
-      setIsLoading(false);
+      setIsLoading(false); // Stop the loading spinner.
     }
   };
 
@@ -126,7 +153,7 @@ export default function PredictPage() {
                 </div>
               </div>
 
-              <form onSubmit={handleSubmit} className="space-y-8">
+              <form onSubmit={handleFormSubmit} className="space-y-8">
                 {/* Job Info Section */}
                 <div className="space-y-6">
                   <div className="flex items-center gap-2 text-slate-400 mb-2">
@@ -140,7 +167,7 @@ export default function PredictPage() {
                       <input
                         type="text"
                         value={formData.Job_titel}
-                        onChange={(e) => handleChange("Job_titel", e.target.value)}
+                        onChange={(e) => handleInputChange("Job_titel", e.target.value)}
                         className="w-full px-5 py-3.5 bg-slate-50 border border-slate-100 rounded-xl focus:bg-white focus:border-slate-300 outline-none transition-all text-[13px] font-medium text-black placeholder:text-slate-300"
                         placeholder="e.g. Senior Frontend Developer"
                         required
@@ -151,7 +178,7 @@ export default function PredictPage() {
                       <label className="text-[11px] font-bold text-black uppercase tracking-tight ml-1">Job Description</label>
                       <textarea
                         value={formData.job_description}
-                        onChange={(e) => handleChange("job_description", e.target.value)}
+                        onChange={(e) => handleInputChange("job_description", e.target.value)}
                         className="w-full px-5 py-3.5 bg-slate-50 border border-slate-100 rounded-xl focus:bg-white focus:border-slate-300 outline-none transition-all text-[13px] font-medium text-black h-32 resize-none placeholder:text-slate-300"
                         placeholder="Paste key requirements or job description here..."
                         required
@@ -172,7 +199,7 @@ export default function PredictPage() {
                       <label className="text-[11px] font-bold text-black uppercase tracking-tight ml-1">Company Size</label>
                       <select
                         value={formData.company_size}
-                        onChange={(e) => handleChange("company_size", e.target.value)}
+                        onChange={(e) => handleInputChange("company_size", e.target.value)}
                         className="w-full px-5 py-3.5 bg-slate-50 border border-slate-100 rounded-xl focus:bg-white focus:border-slate-300 outline-none transition-all text-[13px] font-medium text-black appearance-none cursor-pointer"
                       >
                         {COMPANY_SIZES.map(s => <option key={s} value={s}>{s}</option>)}
@@ -183,7 +210,7 @@ export default function PredictPage() {
                       <label className="text-[11px] font-bold text-black uppercase tracking-tight ml-1">Industry Sector</label>
                       <select
                         value={formData.sector}
-                        onChange={(e) => handleChange("sector", e.target.value)}
+                        onChange={(e) => handleInputChange("sector", e.target.value)}
                         className="w-full px-5 py-3.5 bg-slate-50 border border-slate-100 rounded-xl focus:bg-white focus:border-slate-300 outline-none transition-all text-[13px] font-medium text-black appearance-none cursor-pointer"
                       >
                         {SECTORS.map(s => <option key={s} value={s}>{s}</option>)}
@@ -197,7 +224,7 @@ export default function PredictPage() {
                         <input
                           type="number"
                           value={formData.Founded}
-                          onChange={(e) => handleChange("Founded", parseInt(e.target.value))}
+                          onChange={(e) => handleInputChange("Founded", parseInt(e.target.value))}
                           className="w-full pl-12 pr-5 py-3.5 bg-slate-50 border border-slate-100 rounded-xl focus:bg-white focus:border-slate-300 outline-none transition-all text-[13px] font-medium text-black"
                           required
                         />
@@ -210,7 +237,7 @@ export default function PredictPage() {
                         <MapPin size={16} className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-400" />
                         <select
                           value={formData.state}
-                          onChange={(e) => handleChange("state", e.target.value)}
+                          onChange={(e) => handleInputChange("state", e.target.value)}
                           className="w-full pl-12 pr-5 py-3.5 bg-slate-50 border border-slate-100 rounded-xl focus:bg-white focus:border-slate-300 outline-none transition-all text-[13px] font-medium text-black appearance-none cursor-pointer"
                         >
                           {STATES.map(s => <option key={s} value={s}>{s}</option>)}
