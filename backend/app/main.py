@@ -1,13 +1,10 @@
 # --- 1. Imports ---
 # We import the tools we need to build our web server.
+from app.api.v1.api import api_router
+from app.core.tracing import setup_tracing
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from opentelemetry.instrumentation.fastapi import FastAPIInstrumentor
-
-# We import our own code from other folders.
-from app.api.v1.api import api_router
-from app.core.tracing import setup_tracing
-from app.db.database import engine, Base
 
 # --- 2. Setup Tracing (Observability) ---
 # This helps us see how long each part of our code takes to run.

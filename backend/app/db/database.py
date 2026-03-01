@@ -1,8 +1,8 @@
 import os
 from dotenv import load_dotenv
+from opentelemetry.instrumentation.sqlalchemy import SQLAlchemyInstrumentor
 from sqlalchemy import create_engine
 from sqlalchemy.orm import declarative_base, sessionmaker
-from opentelemetry.instrumentation.sqlalchemy import SQLAlchemyInstrumentor
 
 # --- 1. Load Environment Variables ---
 # We load the .env file so we can access our secret keys and database URLs.

@@ -1,16 +1,17 @@
 import os
+
 import joblib
 import pandas as pd
-
-# --- 1. Setup Paths ---
-# We find the folder where this script lives, so we can find our ML models.
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # Use the skills extraction script we built in Phase 8
 try:
     from scripts.Get_Skills import get_skills
 except ModuleNotFoundError:
     from Get_Skills import get_skills
+
+# --- 1. Setup Paths ---
+# We find the folder where this script lives, so we can find our ML models.
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 def get_job_category_number(title):
     """
