@@ -1,17 +1,16 @@
 import os
 import sys
 
-from fastapi import APIRouter, Depends, HTTPException
-
-# Import our own tools
 from app.api import deps
 from app.models.user import User
 from app.schemas.predict import JobData
+from fastapi import APIRouter, Depends, HTTPException
 
 # --- 1. Import ML Logic ---
 # This part is a bit tricky: we are adding the 'scripts' folder to Python's memory
 # so we can use the 'Predict_salary' function from 'Pipline.py'.
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../../../../../")))
+
 from scripts.Pipline import Predict_salary
 
 # Create the router for prediction paths

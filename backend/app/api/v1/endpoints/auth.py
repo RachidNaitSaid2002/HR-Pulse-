@@ -1,15 +1,13 @@
 from datetime import timedelta
 
-from fastapi import APIRouter, Depends, HTTPException, status
-from fastapi.security import OAuth2PasswordRequestForm
-from sqlalchemy.orm import Session
-
-# Import our own security and database helpers
 from app.api import deps
 from app.core import security
 from app.core.config import settings
 from app.models.user import User
 from app.schemas.user import Token, UserCreate, UserResponse
+from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi.security import OAuth2PasswordRequestForm
+from sqlalchemy.orm import Session
 
 # Create the router for these authentication paths
 router = APIRouter()

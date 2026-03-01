@@ -1,12 +1,10 @@
 import os
 
+from app.core.tracing import tracer
 from azure.ai.textanalytics import TextAnalyticsClient
 from azure.core.credentials import AzureKeyCredential
 from dotenv import load_dotenv
 from opentelemetry import trace
-
-# Import our tracing tool to measure AI speed
-from app.core.tracing import tracer
 
 # --- 1. Load Keys ---
 # We need an 'endpoint' and a 'key' from Azure to use their AI.

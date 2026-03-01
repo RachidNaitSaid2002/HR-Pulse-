@@ -1,4 +1,5 @@
 import os
+
 from dotenv import load_dotenv
 from opentelemetry.instrumentation.sqlalchemy import SQLAlchemyInstrumentor
 from sqlalchemy import create_engine

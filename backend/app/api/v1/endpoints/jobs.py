@@ -1,14 +1,13 @@
 import json
 from typing import List
-from fastapi import APIRouter, Depends, HTTPException
-from sqlalchemy.orm import Session
 
-# Import our own database and security tools
 from app.api import deps
 from app.db.database import get_db
 from app.models.job import Job as JobModel
 from app.models.user import User
 from app.schemas.job import Job as JobSchema
+from fastapi import APIRouter, Depends, HTTPException
+from sqlalchemy.orm import Session
 
 # Create the router for job-related paths
 router = APIRouter()
